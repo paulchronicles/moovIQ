@@ -4,7 +4,7 @@ Source reviewed: `addooco/qa-technical-assessment-task` README on `main` at comm
 
 ## Short Written Summary
 
-I treated the ticket acceptance criteria as the source of truth and designed coverage from the user's main workflow outward: create a task, keep it accurate, then find and order it later. For each ticket I separated the load-bearing scenario from supporting negative, boundary, regression, and exploratory coverage so the highest-value checks are obvious. Where the tickets or API reference are ambiguous, I have called that out rather than silently resolving it, then stated the working assumption I would use until a product owner confirms the intended behavior.
+I treated the ticket acceptance criteria as the source of truth and designed coverage from the user's main workflow outward: create a task, keep it accurate, then find and order it later. For each ticket I separated the load-bearing scenario from supporting negative, boundary, regression, and exploratory coverage so the highest-value checks are obvious. Where the tickets or API reference are ambiguous, I have called that out rather than silently resolving it, then stated the working assumption I would use until a product owner confirms the intended behaviour.
 
 ## Scope
 
@@ -18,11 +18,11 @@ In scope:
 
 Out of scope unless clarified:
 
-- Authentication, authorization, sharing, notifications, attachments, recurring tasks, audit history, offline-first behavior, and bulk operations.
-- Full performance/load testing. I include a lightweight data-volume exploratory charter because list/search/sort behavior can degrade quickly.
+- Authentication, authorisation, sharing, notifications, attachments, recurring tasks, audit history, offline-first behaviour, and bulk operations.
+- Full performance/load testing. I include a lightweight data-volume exploratory charter because list/search/sort behaviour can degrade quickly.
 - Undocumented create/update/delete API endpoint contracts. If those endpoints exist, I would test them; the provided appendix only documents `GET /tasks`.
 
-## Legend And Prioritization
+## Legend And Prioritisation
 
 Case type:
 
@@ -36,7 +36,7 @@ Priority:
 
 - `P0`: must pass before I would recommend release for the ticket.
 - `P1`: important supporting coverage for common risks and AC completeness.
-- `P2`: exploratory, edge, or lower-frequency behavior to run when time allows or automate at a lower layer.
+- `P2`: exploratory, edge, or lower-frequency behaviour to run when time allows or automate at a lower layer.
 
 ## Execution Strategy
 
@@ -44,7 +44,7 @@ Priority:
 2. Run P0/P1 acceptance-criteria coverage for create, edit, delete, filter, and search.
 3. Run cross-ticket regression checks around create -> filter/search, edit -> filter/search/sort, and delete -> filter/search/sort.
 4. Run TASK-104 bonus sorting coverage if the feature is in scope.
-5. Use P2 exploratory sessions for security input handling, concurrency/stale state, network failures, accessibility, mobile/responsive behavior, and larger data sets.
+5. Use P2 exploratory sessions for security input handling, concurrency/stale state, network failures, accessibility, mobile/responsive behaviour, and larger data sets.
 
 ## Working Assumptions
 
@@ -55,8 +55,8 @@ Priority:
 | Persistence | Created, edited, and deleted tasks persist after refresh/session restart. | Yes, persistence is implied by the API reference but not explicit. |
 | IDs | Each task has a unique stable identifier; duplicate titles are allowed. | Useful for update/delete test data. |
 | Title validation | Missing, empty, or whitespace-only title is invalid after trimming. | Yes, only "without a title" is stated. |
-| Status | UI exposes only `To Do`, `In Progress`, `Done`; unsupported values should not be accepted if a backend mutation API exists. | Yes for backend/API error behavior. |
-| Priority | UI exposes only `Low`, `Medium`, `High`; unsupported values should not be accepted if a backend mutation API exists. | Yes for backend/API error behavior. |
+| Status | UI exposes only `To Do`, `In Progress`, `Done`; unsupported values should not be accepted if a backend mutation API exists. | Yes for backend/API error behaviour. |
+| Priority | UI exposes only `Low`, `Medium`, `High`; unsupported values should not be accepted if a backend mutation API exists. | Yes for backend/API error behaviour. |
 | Due date | Optional. Valid dates are accepted; empty due date should not render as `Invalid Date`. | Yes: date-only vs datetime, timezone, past dates, and max range are unspecified. |
 | Search | Search is partial, case-insensitive, trims surrounding whitespace, and at least searches title. Description search is a product question. | Yes. |
 | Filter combination | Status, priority, and search combine with AND semantics. | Yes. |
@@ -69,13 +69,13 @@ Priority:
 | --- | --- | --- |
 | API search gap | Appendix lists `status`, `priority`, and `sortBy`, but no search parameter. | Is search client-side over the loaded list, or is the API documentation missing a search query parameter? |
 | Search scope | TASK-103 says "search for tasks" but not which fields. | Should search include title only, or title and description? |
-| Search matching | Exact, partial, case-sensitive, punctuation handling, and empty query behavior are unspecified. | Should search be partial, trimmed, and case-insensitive, and should clearing search restore the current filtered list? |
-| Filter composition | Separate status and priority filters are listed, but combined behavior is not. | When status, priority, and search are all applied, should they combine as AND? |
+| Search matching | Exact, partial, case-sensitive, punctuation handling, and empty query behaviour are unspecified. | Should search be partial, trimmed, and case-insensitive, and should clearing search restore the current filtered list? |
+| Filter composition | Separate status and priority filters are listed, but combined behaviour is not. | When status, priority, and search are all applied, should they combine as AND? |
 | Sort direction | TASK-104 says sort by due date/priority but not direction or toggling. | Is due date earliest-first by default? Is priority High-to-Low? Can users reverse the order? |
 | Priority sort rank | Priority values are strings, so a naive alphabetical sort is plausible but wrong for urgency. | Should priority sort use High, Medium, Low? |
 | Null due dates | Optional due dates affect sorting and display. | Should tasks without due dates appear last, first, or in a separate group? |
 | Edit validation | TASK-102 says any property can be edited; TASK-101 says title is required. | Does the required-title rule also apply when editing? I assume yes. |
-| Delete safety | Delete behavior does not mention confirmation or undo. | Is delete immediate, confirmed, or undoable? |
+| Delete safety | Delete behaviour does not mention confirmation or undo. | Is delete immediate, confirmed, or undoable? |
 | Field limits | No maximum title/description length or allowed character set is defined. | What limits should the frontend and API enforce? |
 | Date rules | Past dates, datetime precision, timezone, and locale display are not defined. | Are past due dates valid, and what timezone should date-only values use? |
 | Live updates | It is not stated whether active views update after local or cross-tab changes. | Should list views update automatically after create/edit/delete, or is manual refresh acceptable? |
@@ -144,7 +144,7 @@ Load-bearing test: TC-101-01. A user creates a title-only task, sees it in the l
 | TC-101-07 | P0 | N | Empty title | Attempt to create with a missing or empty title. | Save is blocked or request is rejected. Clear validation is shown. No new task is added and entered optional fields are not unexpectedly lost. |
 | TC-101-08 | P1 | N/B | Whitespace-only title | Attempt to create with a title containing only spaces. | Assuming titles are trimmed, save is blocked as an empty title. Ambiguity should be confirmed. |
 | TC-101-09 | P2 | N | Malformed due date | Submit an invalid date string/format, using API/devtools only if such a route exists. | Invalid date is rejected or gracefully handled. No crash, corrupted record, or `Invalid Date` display. |
-| TC-101-10 | P2 | B | Title length limits | Try a long but reasonable title, the agreed max length, and one character over once limits are known. | Boundary value is accepted; over-limit behavior is explicit and consistent. No silent truncation unless product chooses it. |
+| TC-101-10 | P2 | B | Title length limits | Try a long but reasonable title, the agreed max length, and one character over once limits are known. | Boundary value is accepted; over-limit behaviour is explicit and consistent. No silent truncation unless product chooses it. |
 | TC-101-11 | P2 | B | Long description | Create or edit a very long description. | Accepted per agreed limit or rejected clearly. List/detail layout remains usable. |
 | TC-101-12 | P2 | B | Past and far-future due dates | Create tasks due yesterday and due `2099-12-31`. | Accepted unless product forbids past/far-future dates; displayed consistently if accepted. |
 | TC-101-13 | P2 | E/security | Special characters and HTML-like text | Create a task with title/description containing punctuation, non-ASCII characters, and text like `<b>test</b>`. | Stored and rendered as literal text where appropriate. Markup is not interpreted in a way that changes UI or data. |
@@ -156,9 +156,9 @@ Load-bearing test: TC-101-01. A user creates a title-only task, sees it in the l
 
 Exploratory ideas:
 
-- Keyboard-only create flow: tab order, enter/escape behavior, visible focus, save/cancel behavior.
+- Keyboard-only create flow: tab order, enter/escape behaviour, visible focus, save/cancel behaviour.
 - Accessibility of required-field validation: label association, error announcement, contrast.
-- Date picker behavior around month boundaries and locale display.
+- Date picker behaviour around month boundaries and locale display.
 - Empty-state to first-task transition.
 - Responsive layout for long titles and dense lists.
 - Duplicate titles: verify users can distinguish tasks by status, priority, due date, or detail view.
@@ -189,14 +189,14 @@ Load-bearing test: TC-102-01. A user edits multiple properties of an existing ta
 Exploratory ideas:
 
 - If delete confirmation exists, test confirm, cancel, keyboard interaction, and accidental double-click protection.
-- If undo exists, test undo before/after refresh and expiry behavior.
+- If undo exists, test undo before/after refresh and expiry behaviour.
 - Multi-tab stale data: edit in one tab, delete in another.
 - Error recovery when save/delete fails due to network or server error.
 - Status transition expectations: whether any transition is allowed, e.g. Done back to To Do.
 
 ## TASK-103: Filter And Search
 
-Load-bearing test: TC-103-06. A user narrows a realistic list by status, priority, and a partial search term together, then clears the controls. This proves the feature helps users find the right task and protects the highest-risk state-composition behavior.
+Load-bearing test: TC-103-06. A user narrows a realistic list by status, priority, and a partial search term together, then clears the controls. This proves the feature helps users find the right task and protects the highest-risk state-composition behaviour.
 
 | ID | Priority | Type | AC/risk | Scenario and steps | Expected result |
 | --- | --- | --- | --- | --- | --- |
@@ -209,20 +209,20 @@ Load-bearing test: TC-103-06. A user narrows a realistic list by status, priorit
 | TC-103-07 | P1 | N | Search with no matches | Search a term matching nothing. | Empty-state shown, not an error. Existing data is not changed. |
 | TC-103-08 | P1 | N | Filter combination with no matches | Pick a status/priority pair with zero matching tasks. | Empty-state shown, not an error. Clearing controls restores results. |
 | TC-103-09 | P2 | E/security | Injection-style search input | Search for strings like `' OR 1=1--`, `%`, `_`, `?`, and `&`. | Input is treated as literal text. No crash, query parsing issue, or unintended data exposure. |
-| TC-103-10 | P1 | B | Empty and whitespace-only search | Submit empty search, spaces-only search, and whitespace-padded terms such as ` meeting `. | Empty/spaces-only search behaves like no search. Padded terms are trimmed and match the same results as the unpadded term, assuming trim behavior is intended. |
-| TC-103-11 | P1 | B | Search field scope | Search a term that only appears in a task description, not title, using T7's `budget` description term. | Behavior depends on product decision. Result should be documented as title-only or title+description and then tested consistently. |
+| TC-103-10 | P1 | B | Empty and whitespace-only search | Submit empty search, spaces-only search, and whitespace-padded terms such as ` meeting `. | Empty/spaces-only search behaves like no search. Padded terms are trimmed and match the same results as the unpadded term, assuming trim behaviour is intended. |
+| TC-103-11 | P1 | B | Search field scope | Search a term that only appears in a task description, not title, using T7's `budget` description term. | Behaviour depends on product decision. Result should be documented as title-only or title+description and then tested consistently. |
 | TC-103-12 | P1 | E | Clear filters | Apply filters/search, then clear each control and clear all controls. | Full unfiltered list returns, or the current remaining filtered list returns when only one control is cleared. |
 | TC-103-13 | P0 | R | Filter/search after create and edit | Create a new High priority Done task. Verify it appears under Done and High filters. Edit it to Low and To Do. | Filter results reflect latest saved values without stale cached membership. |
 | TC-103-14 | P0 | R | Filter/search after delete | Delete a task that is visible under active filters/search. | Task disappears immediately and remains absent after clearing/reapplying filters. Empty state displays if no matches remain. |
-| TC-103-15 | P2 | E | State on reload/navigation | Apply filters/search, reload the page, navigate away and back, and use browser back/forward if URL state is supported. | State persistence or reset behavior is consistent and intentional. Shared URLs restore state if the product supports URL-based filters. |
-| TC-103-16 | P1 | API/contract | Documented query parameter behavior | For `/tasks?status=Done`, `/tasks?priority=High`, and `/tasks?status=To%20Do&priority=Low`, verify response bodies. | Each response includes only matching tasks. Unsupported query values should have defined behavior; expected behavior needs confirmation because appendix only documents 200 responses. |
+| TC-103-15 | P2 | E | State on reload/navigation | Apply filters/search, reload the page, navigate away and back, and use browser back/forward if URL state is supported. | State persistence or reset behaviour is consistent and intentional. Shared URLs restore state if the product supports URL-based filters. |
+| TC-103-16 | P1 | API/contract | Documented query parameter behaviour | For `/tasks?status=Done`, `/tasks?priority=High`, and `/tasks?status=To%20Do&priority=Low`, verify response bodies. | Each response includes only matching tasks. Unsupported query values should have defined behaviour; expected behaviour needs confirmation because appendix only documents 200 responses. |
 
 Ambiguity of note: the API reference documents `status`, `priority`, and `sortBy` as query parameters on `GET /tasks`, but there is no `search` or `q` parameter despite TASK-103 requiring a search box. I would raise this before automating search: either search is client-side over already-loaded tasks, or the API reference is incomplete.
 
 Exploratory ideas:
 
 - Data volume: verify search/filter responsiveness with 100, 1,000, and 10,000 tasks if realistic.
-- Debounce behavior: no flicker, duplicate requests, or stale results while typing quickly.
+- Debounce behaviour: no flicker, duplicate requests, or stale results while typing quickly.
 - Accessibility: controls have labels, result count changes are understandable, empty state is announced.
 - Mobile ergonomics: filter controls remain usable without hiding results or causing layout shifts.
 
@@ -240,7 +240,7 @@ Load-bearing test: TC-104-04. Priority sort must reflect true urgency, not alpha
 | TC-104-06 | P1 | B | Tie-breaking | Sort a set with duplicate due dates or duplicate priorities. | Order is stable or uses a documented secondary sort, such as created date or title. No duplicate/lost rows. |
 | TC-104-07 | P0 | R | Sort with filters/search | Apply a filter/search, then sort. | Sort applies only to the filtered/searched subset. Filtered-out tasks do not reappear. |
 | TC-104-08 | P1 | R | Sort survives create/edit/delete | Sort applied; create a new task, edit a task's due date/priority, and delete a task. | List re-sorts or clearly requires a manual refresh without leaving stale ordering. Deleted tasks remain gone. |
-| TC-104-09 | P2 | API/negative | Unsupported sort key | Request `/tasks?sortBy=title` or another unsupported value. | Behavior should be defined. Since the schema enum only lists `dueDate` and `priority`, expected behavior is likely a validation error rather than silent mis-sort, but appendix only lists a 200 response. |
+| TC-104-09 | P2 | API/negative | Unsupported sort key | Request `/tasks?sortBy=title` or another unsupported value. | Behaviour should be defined. Since the schema enum only lists `dueDate` and `priority`, expected behaviour is likely a validation error rather than silent mis-sort, but appendix only lists a 200 response. |
 
 Exploratory ideas:
 
@@ -270,7 +270,7 @@ I would automate at three levels once implementation details exist:
 | Layer | Coverage | Tooling | Why |
 | --- | --- | --- | --- |
 | Unit/component | Form validation, default values, filter predicates, priority/date comparators. | App's native test framework. | Fast feedback on logic and edge cases, especially whitespace titles, search matching, and priority rank. |
-| API contract | `/tasks` list/filter/sort query behavior and response shape. | Playwright API tests or Supertest depending on stack. | The appendix gives API context for TASK-103/104 and these checks are stable and cheap. |
+| API contract | `/tasks` list/filter/sort query behaviour and response shape. | Playwright API tests or Supertest depending on stack. | The appendix gives API context for TASK-103/104 and these checks are stable and cheap. |
 | UI E2E smoke | Load-bearing user workflows for create, edit, delete, filter/search, and sort. | Playwright. | Proves the real user journey across UI and backend. Keep this small to avoid brittle coverage. |
 
 Automation included in this repository:
@@ -293,7 +293,7 @@ Example future UI smoke tests I would add once selectors/routes exist:
 | Create title-only task and verify To Do/Medium defaults in list. | Covers form, API, rendering, and list update together. |
 | Edit multiple fields, verify the list, then delete the same task and verify it is gone from filtered/searched views. | Covers the full TASK-102 promise plus a high-risk regression point. |
 | Delete one of two duplicate-title tasks and verify only the selected task disappears. | Protects against ID/key mistakes. |
-| Search/filter/sort combined flow. | Validates the state-management behavior users rely on most. |
+| Search/filter/sort combined flow. | Validates the state-management behaviour users rely on most. |
 | Priority sort uses High, Medium, Low rather than alphabetical order. | Catches a likely implementation shortcut. |
 
 ## Defect Reporting Expectations
@@ -324,6 +324,6 @@ Decisions and trade-offs I would be ready to discuss:
 - I added priority labels so the plan can be executed realistically under time pressure rather than treated as one large checklist.
 - I did not turn every input permutation into a separate manual P0/P1 test; I grouped lower-risk permutations into boundary/exploratory coverage and would push them into unit/API automation where possible.
 - I treated the API search omission as a real documentation/ticket gap, not as a blocker to testing the UI search requirement.
-- I assumed AND semantics for combined filter/search behavior because it is the least surprising behavior for this product, but I would confirm it.
+- I assumed AND semantics for combined filter/search behaviour because it is the least surprising behaviour for this product, but I would confirm it.
 - I kept API expectations careful because the appendix only documents `GET /tasks`; create/update/delete API validation belongs in scope only if those mutation endpoints exist.
 - I would keep E2E automation small and focused, then cover validation and sorting/filter predicates lower in the test pyramid.

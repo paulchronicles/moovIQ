@@ -5,7 +5,7 @@ This repository contains my submission for the Addooco QA technical assessment.
 - Main deliverable: [docs/task-management-test-plan.md](docs/task-management-test-plan.md)
 - Optional automation sketch: [tests/task-management.api.spec.ts](tests/task-management.api.spec.ts)
 
-The test plan covers TASK-101 through TASK-103 and includes the optional TASK-104 sorting ticket. It maps test cases back to acceptance criteria, prioritizes P0/P1/P2 coverage, identifies load-bearing tests, calls out ambiguities, includes exploratory charters, and notes cross-ticket regression risk.
+The test plan covers TASK-101 through TASK-103 and includes the optional TASK-104 sorting ticket. It maps test cases back to acceptance criteria, prioritises P0/P1/P2 coverage, identifies load-bearing tests, calls out ambiguities, includes exploratory charters, and notes cross-ticket regression risk.
 
 ## Automation Sketch
 
